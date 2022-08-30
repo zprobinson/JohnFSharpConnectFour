@@ -5,8 +5,6 @@
     <RootNamespace>fsharp_four_in_row</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Program.fs" />
-    <Compile Include="Program.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="src/Program.fs" />
   </ItemGroup>
 </Project>
