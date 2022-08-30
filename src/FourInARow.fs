@@ -1,7 +1,7 @@
 ﻿module FourInARow
 
-type ChipType = Player1 | Player2
-type BoardSlot = ChipType of ChipType | Empty
+type Player = Player1 | Player2
+type BoardSlot = ChipType of Player | Empty
 type BoardColumn = int
 type Board = BoardSlot array
 type GameOverStatus =
@@ -11,35 +11,46 @@ type GameOverStatus =
 type BoardStatus = 
     | GameOver of GameOverStatus
     | StillGoing
-type GetPlayerMove = Board -> BoardColumn
-type ApplyMove = ChipType -> BoardColumn -> Board -> Board
-type DoTurn = ChipType -> GetPlayerMove -> Board -> Board
+type PlayerMoveGetter = Board -> BoardColumn
+type GetPlayerMoveGetter = Player -> PlayerMoveGetter
+type ApplyMove = Player -> BoardColumn -> Board -> Board
+type DoTurn = Player -> PlayerMoveGetter -> Board -> Board
 
 let numRows = 6
 let numCols = 7
 let emptyBoard = Array2D.init<BoardSlot> numRows numCols (fun x y -> Empty)
 
-let applyMove chipType boardColumn board =
+let applyMove board player boardColumn =
     board
 
-let doTurn chipType getPlayerMove board =
-    let playerMove = getPlayerMove board
-    board |> applyMove chipType playerMove
-
-let showTurn (board:Board) =
+let showBoard (board:Board) =
     printfn "%A" board
     board
 
-let isGameOver (board:Board) =
-    false
+let getBoardStatus (board:Board) =
+    StillGoing
+
+let takeTurn
+    (board:Board)
+    (player:Player)
+    (getPlayerMove:PlayerMoveGetter) =
+    getPlayerMove board
+    |> applyMove board player
+    |> showBoard
+
+let getNextTurn (thisTurn:Player) =
+    match thisTurn with
+    | Player1 -> Player2
+    | Player2 -> Player1
 
 let rec gameLoop
-    (getP1Move:GetPlayerMove)
-    (getP2Move:GetPlayerMove)
-    (board:Board) =
-    board
-    |> doTurn Player1 getP1Move
-    |> showTurn
-    |> doTurn Player2 getP2Move
-    |> showTurn
-    |> gameLoop getP1Move getP2Move
+    (getMoveGetter:GetPlayerMoveGetter)
+    (whosTurn:Player)
+    (board:Board)
+    =
+    match getBoardStatus board with
+    | StillGoing -> 
+        getMoveGetter whosTurn
+        |> takeTurn board whosTurn 
+        |> gameLoop getMoveGetter (getNextTurn whosTurn)
+    | GameOver status -> board
