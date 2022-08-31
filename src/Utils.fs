@@ -5,21 +5,14 @@ let rec mapFormatStringToOutputHelper
     (replaceWith:char list)
     (outStr:char list) =
     match formatStr with
-    | formatHead :: formatRemaining -> 
+    | formatHead :: remainingFormat ->
         match replaceWith with
-        | replaceWithHead :: replaceWithRemaining -> 
-        mapFormatStringToOutputHelper
-            formatRemaining
-            replaceWithRemaining
-            (outStr @ [
-                match formatHead with
-                | '@' -> replaceWithHead
-                | _ -> formatHead
-            ])
-        | [] -> outStr
-        // FIX: here, it should keep going instead of ending
-        // if we run out of replaceWiths
-        // also, for some reason, it says we never have any replaceWiths
+        | replaceWithHead :: remainingReplaceWith ->
+            match formatHead with
+            // TODO clean up some code repetition
+            | '@' -> mapFormatStringToOutputHelper remainingFormat remainingReplaceWith (outStr @ [replaceWithHead])
+            | _ -> mapFormatStringToOutputHelper remainingFormat replaceWith (outStr @ [formatHead])
+        | [] -> mapFormatStringToOutputHelper remainingFormat replaceWith (outStr @ [formatHead])
     | [] -> outStr
 
 /// replaces every "@" in the format string with the
