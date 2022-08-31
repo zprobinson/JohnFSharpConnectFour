@@ -5,6 +5,7 @@ open Utils
 type Player = Player1 | Player2
 type BoardSlot = ChipType of Player | Empty
 type BoardColumn = int
+type BoardRow = int
 type Board = BoardSlot [,]
 type GameOverStatus =
     | Player1Win
@@ -42,9 +43,20 @@ let boardDisplayFormat =
 ---------------
  1 2 3 4 5 6 7 "
 
-let applyMove board player boardColumn =
-    // TODO apply the move
-    board
+let findLowestEmptyRowInCol board boardColumn =
+    1 // TODO
+
+let getMapping (player:Player) colToInsert rowToInsert =
+    fun row col (existingSlot:BoardSlot) -> 
+        match row = rowToInsert && col = colToInsert with
+        | true -> ChipType player
+        | false -> existingSlot
+
+let applyMove (board:Board) (player:Player) boardColumn =
+    findLowestEmptyRowInCol board boardColumn
+    |> getMapping player boardColumn
+    |> Array2D.mapi
+    <| board
 
 let showBoardSlot (slot:BoardSlot) =
     match slot with
@@ -55,7 +67,7 @@ let showBoardSlot (slot:BoardSlot) =
 let showBoard (board:Board) =
     Array2D.map showBoardSlot board
     |> format2dArray boardDisplayFormat
-    |> printfn "%s\n"
+    |> printfn "\n%s\n\n"
     board
 
 let getBoardStatus (board:Board) =
@@ -77,13 +89,13 @@ let getNextTurn (thisTurn:Player) =
 
 let inputPlayerMoveGetter (player:Player) (board:Board) =
     printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstCol lastCol
-    readConsoleLine () |> int // TODO add validation
+    readConsoleLine () |> int |> (+) -1 // TODO add validation
 
 let randomPlayerMoveGetter (player:Player) (board:Board) =
     let colPlayed = randomNextInt firstCol (lastCol + 1)
     printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
         player firstCol lastCol colPlayed
-    colPlayed
+    colPlayed |> (+) -1
 
 let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
     match player with
