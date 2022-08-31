@@ -55,13 +55,16 @@ let inputPlayerMoveGetter (player:Player) (board:Board) =
     printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstCol lastCol
     readConsoleLine () |> int // TODO add validation
 
-let randomPlayerMoveGetter (board:Board) =
-    randomNextInt firstCol (lastCol + 1)
+let randomPlayerMoveGetter (player:Player) (board:Board) =
+    let colPlayed = randomNextInt firstCol (lastCol + 1)
+    printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
+        player firstCol lastCol colPlayed
+    colPlayed
 
 let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
     match player with
     | Player1 -> inputPlayerMoveGetter player
-    | Player2 -> randomPlayerMoveGetter
+    | Player2 -> randomPlayerMoveGetter player
 
 let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)

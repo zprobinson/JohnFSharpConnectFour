@@ -5,6 +5,7 @@
     <RootNamespace>fsharp_four_in_row</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="src/Utils.fs" />
     <Compile Include="src/OOWrappers.fs" />
     <Compile Include="src/FourInARow.fs" />
   </ItemGroup>
