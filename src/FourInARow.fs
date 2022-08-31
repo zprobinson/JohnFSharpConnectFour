@@ -1,5 +1,6 @@
 ﻿module FourInARow
 open OOWrappers
+open Utils
 
 type Player = Player1 | Player2
 type BoardSlot = ChipType of Player | Empty
@@ -23,15 +24,39 @@ let numCols = lastCol
 let firstRow = 1
 let lastRow = 6
 let numRows = lastRow
+
+let xChip = 'X'
+let oChip = 'O'
+let emptySlot = '.'
+
 let emptyBoard:Board = Array2D.init<BoardSlot> numRows numCols (fun x y -> Empty)
+
+let boardDisplayFormat =
+    "\
+|@ @ @ @ @ @ @|
+|@ @ @ @ @ @ @|
+|@ @ @ @ @ @ @|
+|@ @ @ @ @ @ @|
+|@ @ @ @ @ @ @|
+|@ @ @ @ @ @ @|
+---------------
+ 1 2 3 4 5 6 7
+"
 
 let applyMove board player boardColumn =
     // TODO apply the move
     board
 
+let showBoardSlot (slot:BoardSlot) =
+    match slot with
+    | ChipType Player1 -> xChip
+    | ChipType Player2 -> oChip
+    | Empty -> emptySlot
+
 let showBoard (board:Board) =
-    printfn "%A" board
-    // TODO make it pretty
+    Array2D.map showBoardSlot board
+    |> format2dArray boardDisplayFormat
+    |> printfn "%A"
     board
 
 let getBoardStatus (board:Board) =
