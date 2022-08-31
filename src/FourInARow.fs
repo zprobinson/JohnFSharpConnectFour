@@ -75,6 +75,7 @@ let rec gameLoop
         getMoveGetter whosTurn
         |> takeTurn board whosTurn 
         |> gameLoop getMoveGetter (getNextTurn whosTurn)
-    | GameOver status -> board
+    | GameOver status ->
+        printfn "Game Over! Status: %A" status
 
 gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
