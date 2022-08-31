@@ -43,8 +43,16 @@ let boardDisplayFormat =
 ---------------
  1 2 3 4 5 6 7 "
 
+let rec findLowestEmptyRowInColHelper (board:Board) col row =
+    match (row + 1) > lastRow with
+    | true -> row - 1
+    | false ->
+        match board[row, col] with
+        | ChipType _ -> row - 1
+        | Empty -> findLowestEmptyRowInColHelper board col (row + 1)
+
 let findLowestEmptyRowInCol board boardColumn =
-    1 // TODO
+    findLowestEmptyRowInColHelper board boardColumn 0
 
 let getMapping (player:Player) colToInsert rowToInsert =
     fun row col (existingSlot:BoardSlot) -> 
