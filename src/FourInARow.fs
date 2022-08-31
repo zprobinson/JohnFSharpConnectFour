@@ -4,7 +4,7 @@ open OOWrappers
 type Player = Player1 | Player2
 type BoardSlot = ChipType of Player | Empty
 type BoardColumn = int
-type Board = BoardSlot array
+type Board = BoardSlot [,]
 type GameOverStatus =
     | Player1Win
     | Player2Win
@@ -23,7 +23,7 @@ let numCols = lastCol
 let firstRow = 1
 let lastRow = 6
 let numRows = lastRow
-let emptyBoard = Array2D.init<BoardSlot> numRows numCols (fun x y -> Empty)
+let emptyBoard:Board = Array2D.init<BoardSlot> numRows numCols (fun x y -> Empty)
 
 let applyMove board player boardColumn =
     // TODO apply the move
@@ -51,16 +51,17 @@ let getNextTurn (thisTurn:Player) =
     | Player1 -> Player2
     | Player2 -> Player1
 
-let inputPlayerMoveGetter (board:Board) =
-    firstCol
+let inputPlayerMoveGetter (player:Player) (board:Board) =
+    printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstCol lastCol
+    readConsoleLine () |> int // TODO add validation
 
 let randomPlayerMoveGetter (board:Board) =
     randomNextInt firstCol (lastCol + 1)
 
-let getPlayerMoveGetterPvAI player :PlayerMoveGetter =
+let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
     match player with
-    | Player1 -> fun board -> 1
-    | Player2 -> fun board -> 1
+    | Player1 -> inputPlayerMoveGetter player
+    | Player2 -> randomPlayerMoveGetter
 
 let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)
@@ -72,3 +73,5 @@ let rec gameLoop
         |> takeTurn board whosTurn 
         |> gameLoop getMoveGetter (getNextTurn whosTurn)
     | GameOver status -> board
+
+gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
