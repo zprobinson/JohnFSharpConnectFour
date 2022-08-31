@@ -102,6 +102,4 @@ let rec gameLoop
     | GameOver status ->
         printfn "Game Over! Status: %A" status
 
-// gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
-
-printfn "%s" (format2dArray "hi: @ @ test: @" (Array2D.init 2 2 (fun x y -> 'H')))
+gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
