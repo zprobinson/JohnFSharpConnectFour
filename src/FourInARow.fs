@@ -40,8 +40,7 @@ let boardDisplayFormat =
 |@ @ @ @ @ @ @|
 |@ @ @ @ @ @ @|
 ---------------
- 1 2 3 4 5 6 7
-"
+ 1 2 3 4 5 6 7 "
 
 let applyMove board player boardColumn =
     // TODO apply the move
@@ -56,7 +55,7 @@ let showBoardSlot (slot:BoardSlot) =
 let showBoard (board:Board) =
     Array2D.map showBoardSlot board
     |> format2dArray boardDisplayFormat
-    |> printfn "%A"
+    |> printfn "%s\n"
     board
 
 let getBoardStatus (board:Board) =
