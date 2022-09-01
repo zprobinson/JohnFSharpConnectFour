@@ -143,6 +143,7 @@ let rec gameLoop
     // then match board status with
     // | StillGoing -> gameloop
     // | GameOver status -> end the game
+    // TODO: restructure this whole thing, pull up takeTurn functionality into gameloop
     |> gameLoop getMoveGetter (getNextTurn whosTurn)
 
 gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
