@@ -44,7 +44,7 @@ let boardDisplayFormat =
  1 2 3 4 5 6 7 "
 
 let rec findLowestEmptyRowInColHelper (board:Board) col row =
-    match (row + 1) > lastRow with
+    match row > (lastRow - 1) with
     | true -> row - 1
     | false ->
         match board[row, col] with
