@@ -8,8 +8,7 @@ type BoardColumn = int
 type BoardRow = int
 type Board = BoardSlot [,]
 type GameOverStatus =
-    | Player1Win
-    | Player2Win
+    | Win of Player
     | Tie
 type BoardStatus = 
     | GameOver of GameOverStatus
@@ -78,9 +77,33 @@ let showBoard (board:Board) =
     |> printfn "\n%s\n\n"
     board
 
-let getBoardStatus (board:Board) =
-    StillGoing
-    // TODO get the board status like win or tie
+let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numConsecutive:int) =
+    match numConsecutive with
+    | 4 -> true
+    | _ ->
+        match list with
+        | [] -> false
+        | head :: rest ->
+            match head = ChipType checkFor with
+            | true -> hasFourConsecutiveHelper rest checkFor (numConsecutive + 1)
+            | false -> hasFourConsecutiveHelper rest checkFor 0
+
+let hasFourConsecutive (list:BoardSlot list) (checkFor:Player) =
+    hasFourConsecutiveHelper list checkFor 0
+
+let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
+    false // TODO implement
+
+let isBoardFull (board:Board) =
+    false // TODO implement
+
+let boardStatusAfterMove (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) :BoardStatus =
+    match doesMoveCreateWin board player row col with
+    | true -> GameOver (Win player)
+    | false ->
+        match isBoardFull board with
+        | true -> GameOver Tie
+        | false -> StillGoing
 
 let takeTurn
     (board:Board)
@@ -114,12 +137,12 @@ let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)
     (whosTurn:Player)
     (board:Board) =
-    match getBoardStatus board with
-    | StillGoing -> 
-        getMoveGetter whosTurn
-        |> takeTurn board whosTurn 
-        |> gameLoop getMoveGetter (getNextTurn whosTurn)
-    | GameOver status ->
-        printfn "Game Over! Status: %A" status
+    getMoveGetter whosTurn
+    |> takeTurn board whosTurn 
+    // pipe board and played position into boardStatusAfterMove
+    // then match board status with
+    // | StillGoing -> gameloop
+    // | GameOver status -> end the game
+    |> gameLoop getMoveGetter (getNextTurn whosTurn)
 
 gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
