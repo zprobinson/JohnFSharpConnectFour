@@ -91,11 +91,13 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
 let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
 
-let rec pickListFrom2dArray (keepGoing) (getNextPosition) (arr:'a[,]) ((x, y):BoardPosition) (accum:'a list) =
+let rec pickListFrom2dArray (keepGoing) (getNextPosition) (arr:'a[,]) ((x, y):int * int) (accum:'a list) =
     let accum' = arr[x, y] :: accum
     match keepGoing x y with
     | false -> accum'
     | true -> pickListFrom2dArray keepGoing getNextPosition arr (getNextPosition (x, y)) accum'
+
+// let pickRow 
 
 let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
     []
