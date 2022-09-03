@@ -97,10 +97,26 @@ let rec pickListFrom2dArray (keepGoing) (getNextPosition) (arr:'a[,]) ((x, y):in
     | false -> accum'
     | true -> pickListFrom2dArray keepGoing getNextPosition arr (getNextPosition (x, y)) accum'
 
-// let pickRow 
+let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
+    []
+
+let pickColumn (board:Board) (row:BoardRow) (col:BoardColumn) =
+    []
+
+let pickUpDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
+    []
+
+let pickDownDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
+    []
 
 let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
-    []
+    [
+        pickRow
+        pickColumn
+        pickUpDiagonal
+        pickDownDiagonal
+    ]
+    |> List.map (fun pickSequence -> pickSequence board row col)
 
 let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
     getPossibleWinSequences board row col
