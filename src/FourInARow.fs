@@ -59,9 +59,8 @@ let getMapping (player:Player) colToInsert rowToInsert =
         | true -> ChipType player
         | false -> existingSlot
 
-let applyMove (board:Board) (player:Player) boardColumn =
-    findLowestEmptyRowInCol board boardColumn
-    |> getMapping player boardColumn
+let insertChip (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
+    getMapping player col row
     |> Array2D.mapi
     <| board
 
@@ -105,14 +104,6 @@ let boardStatusAfterMove (board:Board) (player:Player) (row:BoardRow) (col:Board
         | true -> GameOver Tie
         | false -> StillGoing
 
-let takeTurn
-    (board:Board)
-    (player:Player)
-    (getPlayerMove:PlayerMoveGetter) =
-    getPlayerMove board
-    |> applyMove board player
-    |> showBoard
-
 let getNextTurn (thisTurn:Player) =
     match thisTurn with
     | Player1 -> Player2
@@ -137,13 +128,13 @@ let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)
     (whosTurn:Player)
     (board:Board) =
-    getMoveGetter whosTurn
-    |> takeTurn board whosTurn 
-    // pipe board and played position into boardStatusAfterMove
-    // then match board status with
-    // | StillGoing -> gameloop
-    // | GameOver status -> end the game
-    // TODO: restructure this whole thing, pull up takeTurn functionality into gameloop
-    |> gameLoop getMoveGetter (getNextTurn whosTurn)
+    let moveCol = getMoveGetter whosTurn board
+    let moveRow = findLowestEmptyRowInCol board moveCol
+    let board' = insertChip board whosTurn moveRow moveCol
+    let boardStatus = boardStatusAfterMove board' whosTurn moveRow moveCol
+    showBoard board' |> ignore
+    match boardStatus with
+    | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
+    | GameOver status -> false // TODO end the game
 
 gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
