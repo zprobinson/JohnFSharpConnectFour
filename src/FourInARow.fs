@@ -87,19 +87,23 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
             | true -> hasFourConsecutiveHelper rest checkFor (numConsecutive + 1)
             | false -> hasFourConsecutiveHelper rest checkFor 0
 
-let hasFourConsecutive (list:BoardSlot list) (checkFor:Player) =
+let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
 
-let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
-    false // TODO implement
+let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
+    []
 
-let rec isBoardFullHelper (board:Board) colIndex =
-    match board[0, colIndex] with
+let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
+    getPossibleWinSequences board row col
+    |> List.exists (hasFourConsecutive player)
+
+let rec isBoardFullHelper (board:Board) col =
+    match board[0, col] with
     | Empty -> false
     | ChipType player ->
-        match colIndex + 1 = lastCol with
+        match col + 1 = lastCol with
         | true -> true
-        | false -> isBoardFullHelper board (colIndex + 1)
+        | false -> isBoardFullHelper board (col + 1)
 
 let isBoardFull (board:Board) =
     isBoardFullHelper board 0
