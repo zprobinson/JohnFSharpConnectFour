@@ -19,12 +19,16 @@ type GetPlayerMoveGetter = Player -> PlayerMoveGetter
 type ApplyMove = Player -> BoardColumn -> Board -> Board
 type DoTurn = Player -> PlayerMoveGetter -> Board -> Board
 
-let firstCol = 1
-let lastCol = 7
-let numCols = lastCol
-let firstRow = 1
-let lastRow = 6
-let numRows = lastRow
+let displayColIndexedBy = 1
+let firstColIndex = 0
+let lastColIndex = 6
+let firstDisplayCol = firstColIndex + displayColIndexedBy
+let lastDisplayCol = lastColIndex + displayColIndexedBy
+let numCols = lastColIndex + 1
+
+let firstRowIndex = 0
+let lastRowIndex = 5
+let numRows = lastRowIndex + 1
 
 let xChip = 'X'
 let oChip = 'O'
@@ -44,7 +48,7 @@ let boardDisplayFormat =
  1 2 3 4 5 6 7 "
 
 let rec findLowestEmptyRowInColHelper (board:Board) col row =
-    match row > (lastRow - 1) with
+    match row > (lastRowIndex) with
     | true -> row - 1
     | false ->
         match board[row, col] with
@@ -91,14 +95,18 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
 let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
 
-let rec pickListFrom2dArray (keepGoing) (getNextPosition) (arr:'a[,]) ((x, y):int * int) (accum:'a list) =
-    let accum' = arr[x, y] :: accum
-    match keepGoing x y with
-    | false -> accum'
-    | true -> pickListFrom2dArray keepGoing getNextPosition arr (getNextPosition (x, y)) accum'
+let rec pickListFrom2dArray (continueWithThis) (getNextPosition) (arr:'a[,]) ((x, y):int * int) (accum:'a list) =
+    match continueWithThis x y with
+    | false -> accum
+    | true -> pickListFrom2dArray continueWithThis getNextPosition arr (getNextPosition (x, y)) (arr[x, y] :: accum)
 
 let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
-    []
+    pickListFrom2dArray
+        (fun row col -> col <= lastColIndex)
+        (fun (x,y) -> (x + 1,y))
+        board
+        (row,0)
+        []
 
 let pickColumn (board:Board) (row:BoardRow) (col:BoardColumn) =
     []
@@ -126,7 +134,7 @@ let rec isBoardFullHelper (board:Board) col =
     match board[0, col] with
     | Empty -> false
     | ChipType player ->
-        match col + 1 = lastCol with
+        match col + 1 = lastDisplayCol with
         | true -> true
         | false -> isBoardFullHelper board (col + 1)
 
@@ -147,13 +155,13 @@ let getNextTurn (thisTurn:Player) =
     | Player2 -> Player1
 
 let inputPlayerMoveGetter (player:Player) (board:Board) =
-    printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstCol lastCol
+    printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
     readConsoleLine () |> int |> (+) -1 // TODO add validation
 
 let randomPlayerMoveGetter (player:Player) (board:Board) =
-    let colPlayed = randomNextInt firstCol (lastCol + 1)
+    let colPlayed = randomNextInt firstDisplayCol (lastDisplayCol + 1)
     printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
-        player firstCol lastCol colPlayed
+        player firstDisplayCol lastDisplayCol colPlayed
     colPlayed |> (+) -1
 
 let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
