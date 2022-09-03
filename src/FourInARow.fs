@@ -93,8 +93,16 @@ let hasFourConsecutive (list:BoardSlot list) (checkFor:Player) =
 let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
     false // TODO implement
 
+let rec isBoardFullHelper (board:Board) colIndex =
+    match board[0, colIndex] with
+    | Empty -> false
+    | ChipType player ->
+        match colIndex + 1 = lastCol with
+        | true -> true
+        | false -> isBoardFullHelper board (colIndex + 1)
+
 let isBoardFull (board:Board) =
-    false // TODO implement
+    isBoardFullHelper board 0
 
 let boardStatusAfterMove (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) :BoardStatus =
     match doesMoveCreateWin board player row col with
@@ -137,4 +145,4 @@ let rec gameLoop
     | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
     | GameOver status -> false // TODO end the game
 
-gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard
+gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard |> ignore
