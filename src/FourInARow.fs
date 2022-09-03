@@ -109,13 +109,28 @@ let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
         []
 
 let pickColumn (board:Board) (row:BoardRow) (col:BoardColumn) =
-    []
+    pickListFrom2dArray
+        (fun row col -> row <= lastRowIndex)
+        (fun (x,y) -> (x,y + 1))
+        board
+        (0,col)
+        []
 
 let pickUpDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
-    []
+    pickListFrom2dArray
+        (fun row col -> row >= firstRowIndex && col <= lastColIndex)
+        (fun (x,y) -> (x + 1,y + 1))
+        board
+        (rowStart,colStart) // TODO
+        []
 
 let pickDownDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
-    []
+    pickListFrom2dArray
+        (fun row col -> row <= lastRowIndex && col <= lastColIndex)
+        (fun (x,y) -> (x - 1,y - 1))
+        board
+        (rowStart,colStart) // TODO
+        []
 
 let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
     [
