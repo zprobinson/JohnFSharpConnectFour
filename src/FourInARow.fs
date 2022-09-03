@@ -7,6 +7,7 @@ type BoardSlot = ChipType of Player | Empty
 type BoardColumn = int
 type BoardRow = int
 type Board = BoardSlot [,]
+type BoardPosition = BoardRow * BoardColumn
 type GameOverStatus =
     | Win of Player
     | Tie
@@ -89,6 +90,12 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
 
 let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
+
+let rec pickListFrom2dArray (keepGoing) (getNextPosition) (arr:'a[,]) ((x, y):BoardPosition) (accum:'a list) =
+    let accum' = arr[x, y] :: accum
+    match keepGoing x y with
+    | false -> accum'
+    | true -> pickListFrom2dArray keepGoing getNextPosition arr (getNextPosition (x, y)) accum'
 
 let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
     []
