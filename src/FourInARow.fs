@@ -95,15 +95,15 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
 let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
 
-let rec pickListFrom2dArray (continueWithThis) (getNextPosition) (arr:'a[,]) ((x, y):int * int) (accum:'a list) =
-    match continueWithThis x y with
+let rec pickListFrom2dArray (continueWithThis) (getNextPosition) (arr:'a[,]) ((row, col):int * int) (accum:'a list) =
+    match continueWithThis row col with
     | false -> accum
-    | true -> pickListFrom2dArray continueWithThis getNextPosition arr (getNextPosition (x, y)) (arr[x, y] :: accum)
+    | true -> pickListFrom2dArray continueWithThis getNextPosition arr (getNextPosition (row, col)) (arr[row, col] :: accum)
 
 let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
     pickListFrom2dArray
         (fun row col -> col <= lastColIndex)
-        (fun (x,y) -> (x + 1,y))
+        (fun (row, col) -> (row, col + 1))
         board
         (row,0)
         []
@@ -111,7 +111,7 @@ let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
 let pickColumn (board:Board) (row:BoardRow) (col:BoardColumn) =
     pickListFrom2dArray
         (fun row col -> row <= lastRowIndex)
-        (fun (x,y) -> (x,y + 1))
+        (fun (row, col) -> (row + 1, col))
         board
         (0,col)
         []
@@ -123,7 +123,7 @@ let getUpDiagonalStart (rowStart,colStart) =
 let pickUpDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
     pickListFrom2dArray
         (fun row col -> row >= firstRowIndex && col <= lastColIndex)
-        (fun (x,y) -> (x + 1,y + 1))
+        (fun (row, col) -> (row - 1, col + 1))
         board
         (getUpDiagonalStart (row, col))
         []
@@ -135,7 +135,7 @@ let getDownDiagonalStart (rowStart,colStart) =
 let pickDownDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
     pickListFrom2dArray
         (fun row col -> row <= lastRowIndex && col <= lastColIndex)
-        (fun (x,y) -> (x - 1,y - 1))
+        (fun (row, col) -> (row + 1, col + 1))
         board
         (getDownDiagonalStart (row, col))
         []
