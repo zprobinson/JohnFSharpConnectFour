@@ -212,7 +212,7 @@ let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)
     (whosTurn:Player)
     (board:Board) =
-    let moveCol = getMoveGetter whosTurn board
+    let moveCol = getValidatedMove (getMoveGetter whosTurn) board
     let moveRow = findLowestEmptyRowInCol board moveCol
     let board' = insertChip board whosTurn moveRow moveCol
     let boardStatus = boardStatusAfterMove board' whosTurn moveRow moveCol
