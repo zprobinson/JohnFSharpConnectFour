@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="src/OOWrappers.fs" />
     <Compile Include="src/Utils.fs" />
+    <Compile Include="src/Domain.fs" />
     <Compile Include="src/FourInARow.fs" />
   </ItemGroup>
 </Project>

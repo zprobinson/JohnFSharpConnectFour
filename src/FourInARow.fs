@@ -1,51 +1,7 @@
 ﻿module FourInARow
 open OOWrappers
 open Utils
-
-type Player = Player1 | Player2
-type BoardSlot = ChipType of Player | Empty
-type BoardColumn = int
-type BoardRow = int
-type Board = BoardSlot [,]
-type BoardPosition = BoardRow * BoardColumn
-type GameOverStatus =
-    | Win of Player
-    | Tie
-type BoardStatus = 
-    | GameOver of GameOverStatus
-    | StillGoing
-type PlayerMoveGetter = Board -> BoardColumn
-type GetPlayerMoveGetter = Player -> PlayerMoveGetter
-type ApplyMove = Player -> BoardColumn -> Board -> Board
-type DoTurn = Player -> PlayerMoveGetter -> Board -> Board
-
-let displayColIndexedBy = 1
-let firstColIndex = 0
-let lastColIndex = 6
-let firstDisplayCol = firstColIndex + displayColIndexedBy
-let lastDisplayCol = lastColIndex + displayColIndexedBy
-let numCols = lastColIndex + 1
-
-let firstRowIndex = 0
-let lastRowIndex = 5
-let numRows = lastRowIndex + 1
-
-let xChip = 'X'
-let oChip = 'O'
-let emptySlot = '.'
-
-let emptyBoard:Board = Array2D.init<BoardSlot> numRows numCols (fun x y -> Empty)
-
-let boardDisplayFormat =
-    "\
-|@ @ @ @ @ @ @|
-|@ @ @ @ @ @ @|
-|@ @ @ @ @ @ @|
-|@ @ @ @ @ @ @|
-|@ @ @ @ @ @ @|
-|@ @ @ @ @ @ @|
----------------
- 1 2 3 4 5 6 7 "
+open Domain
 
 let rec findLowestEmptyRowInColHelper (board:Board) col row =
     match row > (lastRowIndex) with
