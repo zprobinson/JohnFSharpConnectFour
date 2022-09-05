@@ -1,4 +1,5 @@
 module Domain
+open Utils
 
 type Player = Player1 | Player2
 type BoardSlot = ChipType of Player | Empty
@@ -56,3 +57,13 @@ let showGameOutcome status =
         "The game ended in a tie!"
     | Win player ->
         showPlayerName player |> sprintf "%s won the game!"
+
+let showBoardSlot (slot:BoardSlot) =
+    match slot with
+    | ChipType Player1 -> xChip
+    | ChipType Player2 -> oChip
+    | Empty -> emptySlot
+
+let showBoard (board:Board) =
+    Array2D.map showBoardSlot board
+    |> format2dArray boardDisplayFormat

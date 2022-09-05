@@ -4,15 +4,8 @@ open Domain
 open PlayerMoveGetting
 open BoardManipulation
 
-let showBoardSlot (slot:BoardSlot) =
-    match slot with
-    | ChipType Player1 -> xChip
-    | ChipType Player2 -> oChip
-    | Empty -> emptySlot
-
-let showBoard (board:Board) =
-    Array2D.map showBoardSlot board
-    |> format2dArray boardDisplayFormat
+let showBoardInline (board:Board) =
+    showBoard board
     |> printfn "\n%s\n\n"
     board
 
@@ -35,7 +28,7 @@ let rec gameLoop
     | GameOver status -> status
 
 emptyBoard
-|> showBoard
+|> showBoardInline
 |> gameLoop playerVsRandGetPlayerMoveGetter Player1
 |> showGameOutcome
 |> printfn "%s"
