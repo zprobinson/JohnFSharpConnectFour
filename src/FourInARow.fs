@@ -192,6 +192,22 @@ let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
     | Player1 -> inputPlayerMoveGetter player
     | Player2 -> randomPlayerMoveGetter player
 
+let isColumnFull (board:Board) col =
+    board[0, col] = Empty |> not
+
+let rec getValidatedMove (moveGetter:PlayerMoveGetter) (board:Board) =
+    let moveCol = moveGetter board
+    match moveCol >= firstColIndex && moveCol <= lastColIndex with
+    | false ->
+        printfn "That is not a valid column"
+        getValidatedMove moveGetter board
+    | true -> 
+        match isColumnFull board moveCol with
+        | true ->
+            printfn "That column is full"
+            getValidatedMove moveGetter board
+        | false -> moveCol
+
 let rec gameLoop
     (getMoveGetter:GetPlayerMoveGetter)
     (whosTurn:Player)
@@ -205,4 +221,7 @@ let rec gameLoop
     | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
     | GameOver status -> false // TODO end the game
 
-gameLoop playerVsRandGetPlayerMoveGetter Player1 emptyBoard |> ignore
+emptyBoard
+|> showBoard
+|> gameLoop playerVsRandGetPlayerMoveGetter Player1
+|> ignore
