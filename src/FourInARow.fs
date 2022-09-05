@@ -179,7 +179,7 @@ let getNextTurn (thisTurn:Player) =
 
 let rec inputPlayerMoveGetter (player:Player) (board:Board) =
     printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
-    match readConsoleInt () with
+    match tryReadConsoleInt () with
     | None -> 
         printfn "That was not a number"
         inputPlayerMoveGetter player board
@@ -232,8 +232,10 @@ let showPlayerName player =
 
 let showGameOutcome status =
     match status with
-    | Tie -> "The game ended in a tie!"
-    | Win player -> sprintf "%s won the game!" (showPlayerName player)
+    | Tie ->
+        "The game ended in a tie!"
+    | Win player ->
+        showPlayerName player |> sprintf "%s won the game!"
 
 emptyBoard
 |> showBoard

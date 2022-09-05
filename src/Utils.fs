@@ -3,26 +3,26 @@ open System
 open OOWrappers
 
 let rec mapFormatStringToOutputHelper
-    (formatStr:char list)
+    (formatChars:char list)
     (replaceWith:char list)
-    (outStr:char list) =
-    match formatStr with
+    (formatted:char list) =
+    match formatChars with
+    | [] -> formatted
     | formatHead :: remainingFormat ->
         match replaceWith with
+        | [] -> mapFormatStringToOutputHelper remainingFormat replaceWith (formatted @ [formatHead])
         | replaceWithHead :: remainingReplaceWith ->
             match formatHead with
             // TODO clean up some code repetition
-            | '@' -> mapFormatStringToOutputHelper remainingFormat remainingReplaceWith (outStr @ [replaceWithHead])
-            | _ -> mapFormatStringToOutputHelper remainingFormat replaceWith (outStr @ [formatHead])
-        | [] -> mapFormatStringToOutputHelper remainingFormat replaceWith (outStr @ [formatHead])
-    | [] -> outStr
+            | '@' -> mapFormatStringToOutputHelper remainingFormat remainingReplaceWith (formatted @ [replaceWithHead])
+            | _ -> mapFormatStringToOutputHelper remainingFormat replaceWith (formatted @ [formatHead])
 
-/// replaces every "@" in the format string with the
-/// next array element
+/// replaces every "@" in the format string with
+/// array elements, in order
 let format2dArray (formatStr:string) (arr:char[,]) =
     let replaceWith = arr |> Seq.cast<char> |> Seq.toList
-    let formatStr' = formatStr.ToCharArray() |> Seq.cast<char> |> Seq.toList
-    mapFormatStringToOutputHelper formatStr' replaceWith []
+    let formatChars = formatStr.ToCharArray() |> Seq.cast<char> |> Seq.toList
+    mapFormatStringToOutputHelper formatChars replaceWith []
     |> Array.ofList
     |> String
 
@@ -32,7 +32,5 @@ let tryParseInt str =
     with :? FormatException ->
         None
 
-let readConsoleInt () =
-    match readConsoleLine () |> tryParseInt with
-    | Some int -> Some int
-    | None -> None
+let tryReadConsoleInt () =
+    readConsoleLine () |> tryParseInt
