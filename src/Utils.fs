@@ -7,15 +7,27 @@ let rec mapFormatStringToOutputHelper
     (replaceWith:char list)
     (formatted:char list) =
     match formatChars with
-    | [] -> formatted
+    | [] ->
+        formatted
     | formatHead :: remainingFormat ->
         match replaceWith with
-        | [] -> mapFormatStringToOutputHelper remainingFormat replaceWith (formatted @ [formatHead])
+        | [] ->
+            mapFormatStringToOutputHelper
+                remainingFormat
+                replaceWith
+                (formatted @ [formatHead])
         | replaceWithHead :: remainingReplaceWith ->
             match formatHead with
-            // TODO clean up some code repetition
-            | '@' -> mapFormatStringToOutputHelper remainingFormat remainingReplaceWith (formatted @ [replaceWithHead])
-            | _ -> mapFormatStringToOutputHelper remainingFormat replaceWith (formatted @ [formatHead])
+            | '@' ->
+                mapFormatStringToOutputHelper
+                    remainingFormat
+                    remainingReplaceWith
+                    (formatted @ [replaceWithHead])
+            | _ ->
+                mapFormatStringToOutputHelper
+                    remainingFormat
+                    replaceWith
+                    (formatted @ [formatHead])
 
 /// replaces every "@" in the format string with
 /// array elements, in order
