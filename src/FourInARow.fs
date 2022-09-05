@@ -225,7 +225,18 @@ let rec gameLoop
     | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
     | GameOver status -> status
 
+let showPlayerName player =
+    match player with
+    | Player1 -> "Player 1"
+    | Player2 -> "Player 2"
+
+let showGameOutcome status =
+    match status with
+    | Tie -> "The game ended in a tie!"
+    | Win player -> sprintf "%s won the game!" (showPlayerName player)
+
 emptyBoard
 |> showBoard
 |> gameLoop playerVsRandGetPlayerMoveGetter Player1
-|> ignore
+|> showGameOutcome
+|> printfn "%s"
