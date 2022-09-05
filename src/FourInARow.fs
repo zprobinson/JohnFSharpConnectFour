@@ -177,13 +177,13 @@ let getNextTurn (thisTurn:Player) =
     | Player1 -> Player2
     | Player2 -> Player1
 
-let inputPlayerMoveGetter (player:Player) (board:Board) =
+let rec inputPlayerMoveGetter (player:Player) (board:Board) =
     printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
-    readConsoleLine () |> int |> (+) -1
-    // TODO use the new readConsoleInt fn and implement asking
-    // again if None returned
-    // probably make a new util function that gets validated input
-    // and sends a message on bad input like Val's input validation
+    match readConsoleInt () with
+    | None -> 
+        printfn "That was not a number"
+        inputPlayerMoveGetter player board
+    | Some int -> int - 1
 
 let randomPlayerMoveGetter (player:Player) (board:Board) =
     let colPlayed = randomNextInt firstDisplayCol (lastDisplayCol + 1)
@@ -223,7 +223,7 @@ let rec gameLoop
     showBoard board' |> ignore
     match boardStatus with
     | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
-    | GameOver status -> false // TODO end the game
+    | GameOver status -> status
 
 emptyBoard
 |> showBoard
