@@ -1,7 +1,7 @@
 ﻿module FourInARow
-open OOWrappers
 open Utils
 open Domain
+open PlayerMoveGetters
 
 let rec findLowestEmptyRowInColHelper (board:Board) col row =
     match row > (lastRowIndex) with
@@ -133,25 +133,6 @@ let getNextTurn (thisTurn:Player) =
     | Player1 -> Player2
     | Player2 -> Player1
 
-let rec inputPlayerMoveGetter (player:Player) (board:Board) =
-    printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
-    match tryReadConsoleInt () with
-    | None -> 
-        printfn "That was not a number"
-        inputPlayerMoveGetter player board
-    | Some int -> int - 1
-
-let randomPlayerMoveGetter (player:Player) (board:Board) =
-    let colPlayed = randomNextInt firstDisplayCol (lastDisplayCol + 1)
-    printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
-        player firstDisplayCol lastDisplayCol colPlayed
-    colPlayed |> (+) -1
-
-let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
-    match player with
-    | Player1 -> inputPlayerMoveGetter player
-    | Player2 -> randomPlayerMoveGetter player
-
 let isColumnFull (board:Board) col =
     board[0, col] = Empty |> not
 
@@ -180,18 +161,6 @@ let rec gameLoop
     match boardStatus with
     | StillGoing -> gameLoop getMoveGetter (getNextTurn whosTurn) board'
     | GameOver status -> status
-
-let showPlayerName player =
-    match player with
-    | Player1 -> "Player 1"
-    | Player2 -> "Player 2"
-
-let showGameOutcome status =
-    match status with
-    | Tie ->
-        "The game ended in a tie!"
-    | Win player ->
-        showPlayerName player |> sprintf "%s won the game!"
 
 emptyBoard
 |> showBoard

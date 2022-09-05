@@ -44,3 +44,15 @@ let boardDisplayFormat =
 |@ @ @ @ @ @ @|
 ---------------
  1 2 3 4 5 6 7 "
+
+let showPlayerName player =
+    match player with
+    | Player1 -> "Player 1"
+    | Player2 -> "Player 2"
+
+let showGameOutcome status =
+    match status with
+    | Tie ->
+        "The game ended in a tie!"
+    | Win player ->
+        showPlayerName player |> sprintf "%s won the game!"
