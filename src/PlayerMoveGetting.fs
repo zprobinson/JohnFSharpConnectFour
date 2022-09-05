@@ -6,8 +6,10 @@ open OOWrappers
 let displayColToColIndex displayCol =
     displayCol - displayColsIndexedBy
 
+// TODO: abstract the request printing
 let rec inputPlayerMoveGetter (player:Player) (board:Board) =
-    printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
+    printf "%s: Enter a column to play your next chip (%i-%i) >>> "
+        (showPlayerName player) firstDisplayCol lastDisplayCol
     match tryReadConsoleInt () with
     | None -> 
         printfn "That was not a number"
@@ -16,8 +18,8 @@ let rec inputPlayerMoveGetter (player:Player) (board:Board) =
 
 let randomPlayerMoveGetter (player:Player) (board:Board) =
     let colPlayed = randomNextInt firstDisplayCol (lastDisplayCol + 1)
-    printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
-        player firstDisplayCol lastDisplayCol colPlayed
+    printf "%s: Enter a column to play your next chip (%i-%i) >>> %i\n"
+        (showPlayerName player) firstDisplayCol lastDisplayCol colPlayed
     colPlayed |> displayColToColIndex
 
 let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
