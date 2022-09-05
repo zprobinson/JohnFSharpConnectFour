@@ -20,9 +20,10 @@ let rec mapFormatStringToOutputHelper
 /// replaces every "@" in the format string with
 /// array elements, in order
 let format2dArray (formatStr:string) (arr:char[,]) =
-    let replaceWith = arr |> Seq.cast<char> |> Seq.toList
-    let formatChars = formatStr.ToCharArray() |> Seq.cast<char> |> Seq.toList
-    mapFormatStringToOutputHelper formatChars replaceWith []
+    mapFormatStringToOutputHelper
+        (formatStr.ToCharArray() |> Seq.cast<char> |> Seq.toList)
+        (arr |> Seq.cast<char> |> Seq.toList)
+        []
     |> Array.ofList
     |> String
 
