@@ -1,4 +1,6 @@
 module Utils
+open System
+open OOWrappers
 
 let rec mapFormatStringToOutputHelper
     (formatStr:char list)
@@ -22,5 +24,15 @@ let format2dArray (formatStr:string) (arr:char[,]) =
     let formatStr' = formatStr.ToCharArray() |> Seq.cast<char> |> Seq.toList
     mapFormatStringToOutputHelper formatStr' replaceWith []
     |> Array.ofList
-    |> System.String
-    
+    |> String
+
+let tryParseInt str =
+    try
+        str |> int |> Some
+    with :? FormatException ->
+        None
+
+let readConsoleInt () =
+    match readConsoleLine () |> tryParseInt with
+    | Some int -> Some int
+    | None -> None
