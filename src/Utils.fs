@@ -47,3 +47,20 @@ let tryParseInt str =
 
 let tryReadConsoleInt () =
     readConsoleLine () |> tryParseInt
+
+let rec pickListFrom2dArray
+    continueWithThis
+    getNextPosition
+    (arr:'a[,])
+    ((row, col):int * int)
+    (accum:'a list) =
+    match continueWithThis row col with
+    | false -> accum
+    | true ->
+        pickListFrom2dArray
+            continueWithThis
+            getNextPosition
+            arr
+            (getNextPosition (row, col))
+            (arr[row, col] :: accum)
+

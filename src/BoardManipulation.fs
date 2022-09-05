@@ -13,14 +13,14 @@ let rec findLowestEmptyRowInColHelper (board:Board) col row =
 let findLowestEmptyRowInCol board boardColumn =
     findLowestEmptyRowInColHelper board boardColumn 0
 
-let getMapping (player:Player) colToInsert rowToInsert =
+let getInsertChipMapping (player:Player) rowToInsert colToInsert =
     fun row col (existingSlot:BoardSlot) -> 
         match row = rowToInsert && col = colToInsert with
         | true -> ChipType player
         | false -> existingSlot
 
 let insertChip (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
-    getMapping player col row
+    getInsertChipMapping player row col
     |> Array2D.mapi
     <| board
 
@@ -35,13 +35,9 @@ let rec hasFourConsecutiveHelper (list:BoardSlot list) (checkFor:Player) (numCon
             | true -> hasFourConsecutiveHelper rest checkFor (numConsecutive + 1)
             | false -> hasFourConsecutiveHelper rest checkFor 0
 
+// TODO: refactor to be more generic
 let hasFourConsecutive (checkFor:Player) (list:BoardSlot list) =
     hasFourConsecutiveHelper list checkFor 0
-
-let rec pickListFrom2dArray (continueWithThis) (getNextPosition) (arr:'a[,]) ((row, col):int * int) (accum:'a list) =
-    match continueWithThis row col with
-    | false -> accum
-    | true -> pickListFrom2dArray continueWithThis getNextPosition arr (getNextPosition (row, col)) (arr[row, col] :: accum) 
 
 let pickRow (board:Board) (row:BoardRow) (col:BoardColumn) =
     pickListFrom2dArray
@@ -83,7 +79,7 @@ let pickDownDiagonal (board:Board) (row:BoardRow) (col:BoardColumn) =
         (getDownDiagonalStart (row, col))
         []
 
-let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :BoardSlot list list =
+let getPossibleWinSequences board row col =
     [
         pickRow
         pickColumn
@@ -92,7 +88,7 @@ let getPossibleWinSequences (board:Board) (row:BoardRow) (col:BoardColumn) :Boar
     ]
     |> List.map (fun pickSequence -> pickSequence board row col)
 
-let doesMoveCreateWin (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) =
+let doesMoveCreateWin board player row col =
     getPossibleWinSequences board row col
     |> List.exists (hasFourConsecutive player)
 
@@ -107,7 +103,7 @@ let rec isBoardFullHelper (board:Board) col =
 let isBoardFull (board:Board) =
     isBoardFullHelper board 0
 
-let boardStatusAfterMove (board:Board) (player:Player) (row:BoardRow) (col:BoardColumn) :BoardStatus =
+let boardStatusAfterMove board player row col =
     match doesMoveCreateWin board player row col with
     | true -> GameOver (Win player)
     | false ->
