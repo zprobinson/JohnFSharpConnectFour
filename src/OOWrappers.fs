@@ -2,9 +2,10 @@ module OOWrappers
 open System
 
 let random = new Random();
-let randomNextInt inclusiveMin uninclusiveMax = random.Next(inclusiveMin, uninclusiveMax)
+let randomNextInt inclusiveMin exclusiveMax =
+    random.Next(inclusiveMin, exclusiveMax)
 
 let readConsoleLine () = Console.ReadLine()
 
-let stringIndexOf (string:string) (key:char) =
+let indexOf (string:string) (key:char) =
     string.IndexOf(key)
