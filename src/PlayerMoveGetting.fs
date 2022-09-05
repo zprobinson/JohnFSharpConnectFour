@@ -3,19 +3,22 @@ open Domain
 open Utils
 open OOWrappers
 
+let displayColToColIndex displayCol =
+    displayCol - displayColsIndexedBy
+
 let rec inputPlayerMoveGetter (player:Player) (board:Board) =
     printf "%A: Enter a column to play your next chip (%i-%i) >>> " player firstDisplayCol lastDisplayCol
     match tryReadConsoleInt () with
     | None -> 
         printfn "That was not a number"
         inputPlayerMoveGetter player board
-    | Some int -> int - 1
+    | Some int -> displayColToColIndex int
 
 let randomPlayerMoveGetter (player:Player) (board:Board) =
     let colPlayed = randomNextInt firstDisplayCol (lastDisplayCol + 1)
     printf "%A: Enter a column to play your next chip (%i-%i) >>> %i\n"
         player firstDisplayCol lastDisplayCol colPlayed
-    colPlayed |> (+) -1
+    colPlayed |> displayColToColIndex
 
 let playerVsRandGetPlayerMoveGetter player :PlayerMoveGetter =
     match player with
