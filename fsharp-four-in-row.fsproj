@@ -8,7 +8,8 @@
     <Compile Include="src/OOWrappers.fs" />
     <Compile Include="src/Utils.fs" />
     <Compile Include="src/Domain.fs" />
-    <Compile Include="src/PlayerMoveGetters.fs" />
+    <Compile Include="src/PlayerMoveGetting.fs" />
+    <Compile Include="src/BoardManipulation.fs" />
     <Compile Include="src/FourInARow.fs" />
   </ItemGroup>
 </Project>
