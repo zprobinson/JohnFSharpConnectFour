@@ -79,7 +79,7 @@ let tryReadConsoleInt () =
 // You can use the apostrophe (') as a valid character
 // when declaring identifiers. Normally it is used for
 // related but alternate implementations.
-// Again here we can use function composition piping if we want!
+// Again here we can use function composition if we want!
 let tryReadConsoleInt' = readConsoleLine >> tryParseInt
 
 // Learn a bit about tail recursion in F# functions.
