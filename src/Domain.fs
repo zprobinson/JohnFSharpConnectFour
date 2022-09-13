@@ -24,6 +24,7 @@ let printBoardRowONLYForRealThisTime (row : BoardRow') = printfn "%A" row
 // it is a "BoardColumn" of int. The overall type itself is BoardColumn'
 let redHerringBoardRow' : BoardColumn' = BoardColumn 12
 // The allies win because we've leveraged Single Case Discriminated Unions!!
+// EDIT: I notice you can't see red squigglies on GitHub. Line 28 below does NOT compile.
 printBoardRowONLYForRealThisTime redHerringBoardRow'
 
 type Board = BoardSlot [,]
